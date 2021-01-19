@@ -7,52 +7,45 @@ std::string infix2postfix(std::string infix) {
     MyStack<char> outstack(500);
     MyStack<char> operationstack(500);
     int len = infix.length();
-    for (int i = 0; i < len; i++)
-    {
-        //Если будет первод строки, то закончим ввод. (Для удобства, при необходимости можно убрать)
-        if (infix[i] == ' ')
-        {
+    int flag_num = 2;
+    for (int i = 0; i < len; i++) {
+        if (flag_num == 1) {
+            outstack.push(' ');
+        }
+        if (infix[i] == ' ') {
+            flag_num++;
             continue;
         }
-        if (infix[i] == '\0')
-        {
-            while (!operationstack.isEmpty()) {
-                outstack.push(operationstack.get());
-                operationstack.pop();
-            }
-            break;
-        }
-        if ((infix[i] >= 'a') && (infix[i] <= 'z'))
-        {
+        else if ((infix[i] >= '0') && (infix[i] <= '9') || ((infix[i] == '.'))) {
             outstack.push(infix[i]);
+            flag_num = 0;
         }
-        if (infix[i] == '(')
-        {
-            outstack.push(infix[i]);
+        else if (infix[i] == '(') {
+            flag_num++;
+            operationstack.push(infix[i]);
         }
-        if (infix[i] == ')')
-        {
-            while (operationstack.get() != '(')
-            {
+        else if (infix[i] == ')') {
+            flag_num++;
+            outstack.push(' ');
+            while (operationstack.get() != '(') {
                 outstack.push(operationstack.get());
-                operationstack.pop();
+                outstack.push(' ');
+                operationstack.pop_const();
                 if (operationstack.get() == '(')
                 {
-                    operationstack.pop();
+                    operationstack.pop_const();
                     break;
                 }
             }
         }
-        if ((infix[i] == '+') || (infix[i] == '-') || (infix[i] == '/') || (infix[i] == '*'))
-        {
-            if ((infix[i] == '*') || (infix[i] == '/'))
-            {
-                if (!operationstack.isEmpty())
-                {
-                    while ((operationstack.get() == '*') || (operationstack.get()== '/'))
-                    {
+        else if ((infix[i] == '+') || (infix[i] == '-') || (infix[i] == '/') || (infix[i] == '*')) {
+            flag_num++;
+            if ((infix[i] == '*') || (infix[i] == '/')) {
+                if (!operationstack.isEmpty()) {
+                    while ((operationstack.get() == '*') || (operationstack.get() == '/')) {
                         outstack.push(operationstack.get());
-                        operationstack.pop();
+                        outstack.push(' ');
+                        operationstack.pop_const();
                         if (operationstack.isEmpty())
                             break;
                     }
@@ -61,12 +54,11 @@ std::string infix2postfix(std::string infix) {
 
             if ((infix[i] == '+') || (infix[i] == '-'))
             {
-                if (!operationstack.isEmpty())
-                {
-                    while ((operationstack.get() == '*') || (operationstack.get() == '/') || (operationstack.get() == '+') || (operationstack.get() == '-'))
-                    {
+                if (!operationstack.isEmpty()) {
+                    while ((operationstack.get() == '*') || (operationstack.get() == '/') || (operationstack.get() == '+') || (operationstack.get() == '-')) {
                         outstack.push(operationstack.get());
-                        operationstack.pop();
+                        outstack.push(' ');
+                        operationstack.pop_const();
                         if (operationstack.isEmpty())
                             break;
                     }
@@ -75,13 +67,22 @@ std::string infix2postfix(std::string infix) {
             operationstack.push(infix[i]);
         }
     }
-    int new_len = outstack.size_s();
-    char* transl = new char[new_len];
-    int j = 0;
-    while (!outstack.isEmpty())
-    {
-        transl[j++] = outstack.get();
+    while (!operationstack.isEmpty()) {
+        outstack.push(operationstack.get());
+        operationstack.pop_const();
+        if (!operationstack.isEmpty()) {
+            outstack.push(' ');
+        }
     }
+    int new_len = outstack.size_s();
+    outstack.invert();
+    char* transl = new char[new_len + 2];
+    int j = 0;
+    while (!outstack.isEmpty()) {
+        transl[j++] = outstack.get();
+        outstack.pop();
+    }
+    transl[j++] = '\0';
     std::string postfix = std::string(transl);
     infix = postfix;
     delete[] transl;
