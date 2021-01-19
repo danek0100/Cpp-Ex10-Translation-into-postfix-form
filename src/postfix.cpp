@@ -15,16 +15,14 @@ std::string infix2postfix(std::string infix) {
         if (infix[i] == ' ') {
             flag_num++;
             continue;
-        }
-        else if ((infix[i] >= '0' && infix[i] <= '9') || (infix[i] == '.')) {
+        } else if ((infix[i] >= '0' && infix[i] <= '9') ||
+            (infix[i] == '.')) {
             outstack.push(infix[i]);
             flag_num = 0;
-        }
-        else if (infix[i] == '(') {
+        } else if (infix[i] == '(') {
             flag_num++;
             operationstack.push(infix[i]);
-        }
-        else if (infix[i] == ')') {
+        } else if (infix[i] == ')') {
             flag_num++;
             if (outstack.get() != ' ') {
                 outstack.push(' ');
@@ -38,11 +36,10 @@ std::string infix2postfix(std::string infix) {
                     break;
                 }
             }
-        }
-        else if ((infix[i] == '+') || (infix[i] == '-') ||
+        } else if ((infix[i] == '+') || (infix[i] == '-') ||
             (infix[i] == '/') || (infix[i] == '*')) {
             flag_num++;
-            if ((infix[i] == '*') || (infix[i] == '/')){
+            if ((infix[i] == '*') || (infix[i] == '/')) {
                 if (!operationstack.isEmpty()) {
                     while ((operationstack.get() == '*') ||
                         (operationstack.get() == '/')) {
@@ -58,9 +55,9 @@ std::string infix2postfix(std::string infix) {
 
             if ((infix[i] == '+') || (infix[i] == '-')) {
                 if (!operationstack.isEmpty()) {
-                    while ((operationstack.get() == '*') || 
-                        (operationstack.get() == '/') || 
-                        (operationstack.get() == '+') || 
+                    while ((operationstack.get() == '*') ||
+                        (operationstack.get() == '/') ||
+                        (operationstack.get() == '+') ||
                         (operationstack.get() == '-')) {
                         outstack.push(operationstack.get());
                         outstack.push(' ');
