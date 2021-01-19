@@ -45,6 +45,12 @@ public:
         return temp;
     }
 
+    Type pop_const() {
+        Type temp = stack[num_of_el - 1];
+        num_of_el--;
+        return temp;
+    }
+
     void push(Type element) {
         stack[num_of_el] = element;
         num_of_el++;
@@ -58,6 +64,13 @@ public:
     }
     int size_s() {
         return num_of_el;
+    }
+    void invert() {
+        for (int i = 0; i < num_of_el / 2; i++) {
+            Type temp = stack[num_of_el - 1 - i];
+            stack[num_of_el - 1 - i] = stack[i];
+            stack[i] = temp;
+        }
     }
 };
 
