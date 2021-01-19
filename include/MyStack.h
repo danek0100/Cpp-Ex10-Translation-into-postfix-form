@@ -4,12 +4,12 @@
 
 template<class Type>
 class MyStack {
-private:
+ private:
     int num_of_el = 0;
     int size;
     Type* stack;
 
-public:
+ public:
     explicit MyStack(int size) {
         this->size = size;
         stack = new Type[this->size];
